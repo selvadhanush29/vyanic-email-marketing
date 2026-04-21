@@ -5,7 +5,7 @@ const db = require('./db/db');
 
 const subscriberRoutes = require('./routes/subscribers');
 const campaignRoutes = require('./routes/campaigns');
-
+const emailRoutes = require('./routes/email');
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -15,7 +15,7 @@ app.use(express.json());
 // Routes
 app.use('/api/subscribers', subscriberRoutes);
 app.use('/api/campaigns', campaignRoutes);
-
+app.use('/api/email', emailRoutes);
 // Test routes
 app.get('/', (req, res) => {
   res.json({ message: 'Vyanic Backend is running! 🚀' });

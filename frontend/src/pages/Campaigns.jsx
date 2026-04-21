@@ -31,7 +31,17 @@ function Campaigns() {
       setBody('')
       fetchCampaigns()
     } catch (err) {
-      setMessage('❌ ' + err.response?.data?.error || 'Something went wrong')
+      setMessage('❌ ' + (err.response?.data?.error || 'Something went wrong'))
+    }
+  }
+
+  const sendCampaign = async (campaignId) => {
+    try {
+      const res = await axios.post(`http://localhost:8000/api/email/send/${campaignId}`)
+      setMessage('✅ ' + res.data.message)
+      fetchCampaigns()
+    } catch (err) {
+      setMessage('❌ ' + (err.response?.data?.error || 'Failed to send'))
     }
   }
 
@@ -60,10 +70,15 @@ function Campaigns() {
           <div style={{ color: '#a0bfcc', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.6px', marginBottom: '12px' }}>
             All Campaigns ({campaigns.length})
           </div>
+          {message && (
+            <div style={{ padding: '10px', borderRadius: '8px', marginBottom: '12px', fontSize: '12px', background: message.includes('✅') ? 'rgba(0,229,192,0.1)' : 'rgba(231,76,60,0.1)', color: message.includes('✅') ? '#00e5c0' : '#e74c3c' }}>
+              {message}
+            </div>
+          )}
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                {['Title', 'Subject', 'Status', 'Created'].map(h => (
+                {['Title', 'Subject', 'Status', 'Created', 'Action'].map(h => (
                   <th key={h} style={{ color: '#6b8fa8', fontSize: '11px', textAlign: 'left', padding: '8px 12px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>{h}</th>
                 ))}
               </tr>
@@ -79,10 +94,24 @@ function Campaigns() {
                   <td style={{ color: '#6b8fa8', fontSize: '11px', padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                     {new Date(c.created_at).toLocaleDateString()}
                   </td>
+                  <td style={{ padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    {c.status === 'draft' && (
+                      <button
+                        onClick={() => sendCampaign(c.id)}
+                        style={{
+                          background: 'linear-gradient(90deg,#00c9a7,#0070c0)',
+                          border: 'none', borderRadius: '6px',
+                          color: '#fff', fontSize: '11px',
+                          padding: '4px 12px', cursor: 'pointer'
+                        }}>
+                        Send
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
               {campaigns.length === 0 && (
-                <tr><td colSpan="4" style={{ color: '#6b8fa8', textAlign: 'center', padding: '20px', fontSize: '13px' }}>No campaigns yet</td></tr>
+                <tr><td colSpan="5" style={{ color: '#6b8fa8', textAlign: 'center', padding: '20px', fontSize: '13px' }}>No campaigns yet</td></tr>
               )}
             </tbody>
           </table>
@@ -91,11 +120,6 @@ function Campaigns() {
         {/* Create Campaign Form */}
         <div style={cardStyle}>
           <div style={{ color: '#a0bfcc', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.6px', marginBottom: '16px' }}>Create New Campaign</div>
-          {message && (
-            <div style={{ padding: '10px', borderRadius: '8px', marginBottom: '12px', fontSize: '12px', background: message.includes('✅') ? 'rgba(0,229,192,0.1)' : 'rgba(231,76,60,0.1)', color: message.includes('✅') ? '#00e5c0' : '#e74c3c' }}>
-              {message}
-            </div>
-          )}
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '14px' }}>
               <label style={{ color: '#6b8fa8', fontSize: '11px', display: 'block', marginBottom: '5px' }}>Campaign Title</label>
