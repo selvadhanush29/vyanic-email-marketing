@@ -1,16 +1,70 @@
-# React + Vite
+# Vyanic Email Marketing App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack email marketing web application built for Vyanic (vyanic.com).
 
-Currently, two official plugins are available:
+## Tech Stack
+- Frontend: React + Vite + Tailwind CSS
+- Backend: Node.js + Express
+- Database: MySQL
+- Email: Nodemailer + Gmail
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
+- Add and manage email subscribers
+- Create email campaigns
+- Send campaigns to all subscribers
+- Track campaign status
 
-## React Compiler
+## Setup Instructions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Clone the repository
+git clone https://github.com/selvadhanush29/vyanic-email-marketing.git
+cd vyanic-email-marketing
 
-## Expanding the ESLint configuration
+### 2. Backend Setup
+cd backend
+npm install
+Create a .env file with:
+PORT=8000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=vyanic_db
+GMAIL_USER=your_gmail@gmail.com
+GMAIL_PASS=your_gmail_app_password
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 3. Database Setup
+Create MySQL database: vyanic_db
+Run the following SQL:
+CREATE TABLE subscribers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  status ENUM('active','unsubscribed') DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE campaigns (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(200) NOT NULL,
+  subject VARCHAR(200) NOT NULL,
+  body TEXT NOT NULL,
+  status ENUM('draft','sent') DEFAULT 'draft',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+### 4. Start Backend
+npm run dev
+
+### 5. Frontend Setup
+cd ../frontend
+npm install
+npm run dev
+
+### 6. Open App
+http://localhost:5173
+
+## API Endpoints
+- GET  /api/subscribers — Get all subscribers
+- POST /api/subscribers — Add new subscriber
+- GET  /api/campaigns  — Get all campaigns
+- POST /api/campaigns  — Create new campaign
+- POST /api/email/send/:id — Send campaign
