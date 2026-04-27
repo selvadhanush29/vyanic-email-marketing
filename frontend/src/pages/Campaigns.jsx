@@ -95,18 +95,18 @@ function Campaigns() {
                     {new Date(c.created_at).toLocaleDateString()}
                   </td>
                   <td style={{ padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    {c.status === 'draft' && (
-                      <button
-                        onClick={() => sendCampaign(c.id)}
-                        style={{
-                          background: 'linear-gradient(90deg,#00c9a7,#0070c0)',
-                          border: 'none', borderRadius: '6px',
-                          color: '#fff', fontSize: '11px',
-                          padding: '4px 12px', cursor: 'pointer'
-                        }}>
-                        Send
-                      </button>
-                    )}
+                    <button
+                      onClick={() => sendCampaign(c.id)}
+                      style={{
+                        background: c.status === 'sent'
+                          ? 'linear-gradient(90deg,#6b8fa8,#4a7a8a)'
+                          : 'linear-gradient(90deg,#00c9a7,#0070c0)',
+                        border: 'none', borderRadius: '6px',
+                        color: '#fff', fontSize: '11px',
+                        padding: '4px 12px', cursor: 'pointer'
+                      }}>
+                      {c.status === 'sent' ? '🔄 Resend' : '📧 Send'}
+                    </button>
                   </td>
                 </tr>
               ))}
